@@ -69,5 +69,5 @@ class PicPacPut
   end
 end
 
-picpacput = PicPacPut.new
-picpacput.thumbDirDown
+#picpacput = PicPacPut.new
+#picpacput.thumbDirDown
