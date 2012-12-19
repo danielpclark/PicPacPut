@@ -1,2 +1,18 @@
 The purpose of PicPacPut is to shrink images in bulk and then hand them
 off to something else; as in a service or into a compressed file.
+
+Example usage:
+
+    require 'picpacput'
+    p = PicPacPut.new
+    p.pic
+    p.put
+
+By the current defaults this will shrink all images to 5% and
+place the images in the subfolder called resized.  Then all images
+get compressed into the default resized/output.zip .  Coming soon
+'put' to send the zip file where you want.
+
+Look at the source to see the options you can define.  You have many options.
+You can call the options when you first initialize the object.
+PicPacPut.new( { :folder=>'./', :scale_by=>0.15, :zipFile=>'output.zip', :recursive=>false } )
