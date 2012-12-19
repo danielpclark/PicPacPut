@@ -1,26 +1,31 @@
 #!/usr/bin/ruby
 
 require 'find'
-require 'tmpdir' # Dir.tmpdir
+#require 'tmpdir' # Dir.tmpdir
 require 'rubygems'
 require 'RMagick'
+require 'zip/zip'
 
 
 class PicPacPut
-  attr_accessor :folder, :extension, :scale_by, :outfolder, :ext_types
+  attr_accessor :folder, :recursive, :extension, :scale_by, :outfolder, :ext_types
 
   def initialize( opts = {} )
     options = {
       :folder => ('.'+File::SEPARATOR),
+      :recursive => true,
       :extension => "*.JPG",
       :scale_by => 0.05,
+      :zipFile => 'output.zip',
       :outfolder => ('resized'+File::SEPARATOR),
       :ext_types => ["png","PNG","jpg","JPG","jpeg","JPEG","gif","GIF","bmp","BMP"]
     }.merge(opts)
     @folder = options[:folder]
+    @recursive = options[:recursive]
     @extension = options[:extension]
     @scale_by = options[:scale_by]
     @outfolder = options[:outfolder]
+    @zipFile = options[:zipFile]
     @ext_types = options[:ext_types]
     Dir.mkdir(@outfolder) unless File.exists?(@outfolder)
   end
@@ -51,7 +56,10 @@ class PicPacPut
     end
   end
   
-  def thumbDirDown
+  def pic
+    if not @recursive
+      return thumbit
+    end
     dirList = []
     Find.find(@folder) do |f|
       if !!f[@outfolder]
@@ -67,7 +75,20 @@ class PicPacPut
     end
     dirList
   end
+
+  def pac
+    Zip::ZipFile.open( @outfolder + File::SEPARATOR + @zipFile, Zip::ZipFile::CREATE) do |zipfile|
+      Dir.glob( @outfolder + File::SEPARATOR + '*' ).each do |filename|
+        filename.gsub!(File::SEPARATOR*2, File::SEPARATOR)
+        if File.directory?(filename) or !!filename[@zipFile]
+          next
+        end
+        zipfile.add(filename, filename)
+      end
+    end
+  end
 end
 
 #picpacput = PicPacPut.new
-#picpacput.thumbDirDown
+#picpacput.pic
+#picpacput.pac
