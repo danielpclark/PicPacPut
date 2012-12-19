@@ -6,7 +6,7 @@ Example usage:
     require 'picpacput'
     p = PicPacPut.new
     p.pic
-    p.put
+    p.pac
 
 By the current defaults this will shrink all images to 5% and
 place the images in the subfolder called resized.  Then all images
